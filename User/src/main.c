@@ -40,3 +40,29 @@ void SysTick_Handler(void) {
     QF_TICK_X(0U, (void *)0);  /* perform clock processing QF */
     QXK_ISR_EXIT();  /* inform QXK about exiting an ISR */
 }
+
+#ifdef Q_SPY
+    void QS_onFlush(void) {}
+    void QS_onReset(void) {}
+    void QS_onCleanup(void) {}
+
+    QSTimeCtr QS_onGetTime(void) {
+        return 0;
+    }
+
+    void QS_onCommand(
+        uint8_t cmdId,
+        uint32_t param1,
+        uint32_t param2,
+        uint32_t param3
+    ) {
+        (void)param1;
+        (void)param2;
+        (void)param3;
+
+        switch(cmdId) {
+            default: break;
+        }
+    }
+    
+#endif
