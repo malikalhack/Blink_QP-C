@@ -3,22 +3,7 @@
 #include <stdio.h>  /* for printf()/fprintf() */
 #include <stdlib.h> /* for exit() */
 
-
 Q_DEFINE_THIS_FILE
-
-#define STANDARD_TIME (3000000)
-
-int blink(void) {
-    unsigned int time;
-    while(1) {
-        time = STANDARD_TIME;
-        while(time--);
-        board_led_on();
-        time = STANDARD_TIME;
-        while(time--);
-        board_led_off();
-    }
-}
 
 int main(void) {
     static QEvt const *blink_queueSto[10];
@@ -37,14 +22,12 @@ int main(void) {
     return QF_run();
 }
 
-void QF_onCleanup(void) {
-    // do nothing
-}
-
 void QF_onStartup(void) {}
 
-void QXK_onIdle(void) {
+void QXK_onIdle(void) {}
 
+void QF_onCleanup(void) {
+    // do nothing
 }
 
 void Q_onAssert(char const * const module, int loc) {
@@ -57,5 +40,3 @@ void SysTick_Handler(void) {
     QF_TICK_X(0U, (void *)0);  /* perform clock processing QF */
     QXK_ISR_EXIT();  /* inform QXK about exiting an ISR */
 }
-
-
