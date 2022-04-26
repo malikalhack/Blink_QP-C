@@ -1,7 +1,5 @@
 #include "blink.h"
 #include "bsp.h"
-#include <stdio.h>  /* for printf()/fprintf() */
-#include <stdlib.h> /* for exit() */
 
 Q_DEFINE_THIS_FILE
 
@@ -22,21 +20,49 @@ int main(void) {
     return QF_run();
 }
 
-void QF_onStartup(void) {}
-
-void QXK_onIdle(void) {}
+void QF_onStartup(void) {
+}
 
 void QF_onCleanup(void) {
-    // do nothing
+    /* do nothing */
 }
 
 void Q_onAssert(char const * const module, int loc) {
-    fprintf(stderr, "Assertion failed in %s:%d", module, loc);
-    exit(-1);
+    QS_ASSERTION(module, loc, 10000U); /* report assertion to QS */
+    SystemReset();
 }
 
-void SysTick_Handler(void) {
-    QXK_ISR_ENTRY();   /* inform QXK about entering an ISR */
-    QF_TICK_X(0U, (void *)0);  /* perform clock processing QF */
-    QXK_ISR_EXIT();  /* inform QXK about exiting an ISR */
-}
+
+#ifdef Q_SPY
+    void QS_onReset(void) {
+        SystemReset();
+    }
+    
+    void QS_onCleanup(void) {
+    
+    }
+
+    void QS_onCommand(
+        uint8_t cmdId,
+        uint32_t param1,
+        uint32_t param2,
+        uint32_t param3
+    ) {
+/*
+        (void)param1;
+        (void)param2;
+        (void)param3;
+
+        switch(cmdId) {
+            default: break;
+        }
+*/
+    QS_BEGIN_ID(0U, 0U) /* app-specific record */
+        QS_U8(2, cmdId);
+        QS_U32(8, param1);
+        QS_U32(8, param2);
+        QS_U32(8, param3);
+    QS_END()
+    }
+    
+#endif

@@ -15,4 +15,6 @@ void board_led_on(void);
  */
 void board_led_off(void);
 
+
+__declspec(noreturn) void SystemReset(void);
 #endif /* !BSP_H_ */
