@@ -75,7 +75,7 @@
       <OPTFL>
         <tvExp>1</tvExp>
         <tvExpOptDlg>0</tvExpOptDlg>
-        <IsCurrentTarget>1</IsCurrentTarget>
+        <IsCurrentTarget>0</IsCurrentTarget>
       </OPTFL>
       <CpuCode>18</CpuCode>
       <DebugOpt>
@@ -298,7 +298,7 @@
       <OPTFL>
         <tvExp>1</tvExp>
         <tvExpOptDlg>0</tvExpOptDlg>
-        <IsCurrentTarget>0</IsCurrentTarget>
+        <IsCurrentTarget>1</IsCurrentTarget>
       </OPTFL>
       <CpuCode>18</CpuCode>
       <DebugOpt>
@@ -348,7 +348,7 @@
         <SetRegEntry>
           <Number>0</Number>
           <Key>DLGTARM</Key>
-          <Name>(1010=-1,-1,-1,-1,0)(1007=-1,-1,-1,-1,0)(1008=545,84,921,319,0)(1009=-1,-1,-1,-1,0)</Name>
+          <Name>(1010=641,87,1091,643,0)(1007=105,136,292,410,0)(1008=545,84,921,319,0)(1009=-1,-1,-1,-1,0)</Name>
         </SetRegEntry>
         <SetRegEntry>
           <Number>0</Number>
@@ -375,9 +375,9 @@
         <Bp>
           <Number>0</Number>
           <Type>0</Type>
-          <LineNumber>57</LineNumber>
-          <EnabledFlag>0</EnabledFlag>
-          <Address>134224874</Address>
+          <LineNumber>60</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>134225188</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -386,23 +386,23 @@
           <BreakIfRCount>1</BreakIfRCount>
           <Filename>.\User\src\main.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\blink_stm32f103c8\User/src/main.c\57</Expression>
+          <Expression>\\blink_stm32f103c8\User/src/main.c\60</Expression>
         </Bp>
         <Bp>
           <Number>1</Number>
           <Type>0</Type>
-          <LineNumber>42</LineNumber>
+          <LineNumber>38</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134221832</Address>
+          <Address>134225286</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>.\User\src\blink.c</Filename>
+          <Filename>.\User\src\main.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\blink_stm32f103c8\User/src/blink.c\42</Expression>
+          <Expression>\\blink_stm32f103c8\User/src/main.c\38</Expression>
         </Bp>
       </Breakpoint>
       <Tracepoint>
@@ -449,12 +449,20 @@
       <pMultCmdsp></pMultCmdsp>
       <SystemViewers>
         <Entry>
+          <Name>System Viewer\GPIOB</Name>
+          <WinId>35902</WinId>
+        </Entry>
+        <Entry>
           <Name>System Viewer\GPIOC</Name>
           <WinId>35905</WinId>
         </Entry>
         <Entry>
           <Name>System Viewer\RCC</Name>
           <WinId>35904</WinId>
+        </Entry>
+        <Entry>
+          <Name>System Viewer\USART3</Name>
+          <WinId>35903</WinId>
         </Entry>
       </SystemViewers>
       <DebugDescription>
@@ -757,7 +765,7 @@
 
   <Group>
     <GroupName>qspy</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
