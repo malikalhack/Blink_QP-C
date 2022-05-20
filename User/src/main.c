@@ -1,9 +1,24 @@
 #include "blink.h"
 #include "bsp.h"
-#include <stdio.h>  /* for printf()/fprintf() */
-#include <stdlib.h> /* for exit() */
 
 Q_DEFINE_THIS_FILE
+
+#ifdef Q_SPY
+
+typedef enum {
+    dummy = 0,
+    print_param_1,
+    print_param_2,
+    print_param_3,
+    print_all_param,
+    throw_error
+} qspy_commands_t;
+
+typedef enum {
+    BLINK = QS_USER
+} qspy_trace_records_t;
+
+#endif
 
 int main(void) {
     static QEvt const *blink_queueSto[10];
@@ -22,21 +37,70 @@ int main(void) {
     return QF_run();
 }
 
-void QF_onStartup(void) {}
-
-void QXK_onIdle(void) {}
+void QF_onStartup(void) {
+    QS_USR_DICTIONARY(BLINK);
+    QS_GLB_FILTER(QS_UA_RECORDS);
+}
 
 void QF_onCleanup(void) {
-    // do nothing
+    /* do nothing */
 }
 
 void Q_onAssert(char const * const module, int loc) {
-    fprintf(stderr, "Assertion failed in %s:%d", module, loc);
-    exit(-1);
+    QS_ASSERTION(module, loc, 10000U); /* report assertion to QS */
+    SystemReset();
 }
 
-void SysTick_Handler(void) {
-    QXK_ISR_ENTRY();   /* inform QXK about entering an ISR */
-    QF_TICK_X(0U, (void *)0);  /* perform clock processing QF */
-    QXK_ISR_EXIT();  /* inform QXK about exiting an ISR */
-}
+
+#ifdef Q_SPY
+    void QS_onReset(void) {
+        SystemReset();
+    }
+    
+    void QS_onCleanup(void) {
+    
+    }
+
+    void QS_onCommand(
+        uint8_t cmdId,
+        uint32_t param1,
+        uint32_t param2,
+        uint32_t param3
+    ) {
+        switch(cmdId) {    
+            case dummy: break;
+            case print_param_1:
+                QS_BEGIN_ID(BLINK, 0U)
+                    QS_STR("Print parameter #1:");
+                    QS_U32(8, param1);
+                QS_END()
+                break;
+            case print_param_2:
+                QS_BEGIN_ID(BLINK, 0U)
+                    QS_STR("Print parameter #2:");
+                    QS_U32(8, param2);
+                QS_END()
+                break;
+            case print_param_3:
+                QS_BEGIN_ID(BLINK, 0U)
+                    QS_STR("Print parameter #3:");
+                    QS_U32(8, param3);
+                QS_END()
+                break;
+            case print_all_param:
+                QS_BEGIN_ID(BLINK, 0U)
+                    QS_STR("Print all parameters:\n");
+                    QS_U32(8, param1);
+                    QS_U32(8, param2);
+                    QS_U32(8, param3);
+                QS_END()
+                break;
+            case throw_error:
+                QS_BEGIN_ID(BLINK, 0U)
+                    QS_STR("Throw ERROR!\n");
+                QS_END()
+            default: Q_ERROR();
+        }
+    }
+    
+#endif
