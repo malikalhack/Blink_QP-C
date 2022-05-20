@@ -90,7 +90,7 @@
             <nStopA1X>0</nStopA1X>
             <nStopA2X>0</nStopA2X>
           </AfterMake>
-          <SelectedForBatchBuild>0</SelectedForBatchBuild>
+          <SelectedForBatchBuild>1</SelectedForBatchBuild>
           <SVCSIdString></SVCSIdString>
         </TargetCommonOption>
         <CommonProperty>
@@ -544,11 +544,6 @@
               <FilePath>.\QPC\platform\src\qf_time.c</FilePath>
             </File>
             <File>
-              <FileName>qstamp.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\QPC\platform\src\qstamp.c</FilePath>
-            </File>
-            <File>
               <FileName>qxk.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\QPC\platform\src\qxk.c</FilePath>
@@ -667,6 +662,11 @@
               <FileType>1</FileType>
               <FilePath>.\QPC\spy\src\qs_rx.c</FilePath>
             </File>
+            <File>
+              <FileName>qstamp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\QPC\spy\src\qstamp.c</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>
@@ -755,7 +755,7 @@
             <nStopA1X>0</nStopA1X>
             <nStopA2X>0</nStopA2X>
           </AfterMake>
-          <SelectedForBatchBuild>0</SelectedForBatchBuild>
+          <SelectedForBatchBuild>1</SelectedForBatchBuild>
           <SVCSIdString></SVCSIdString>
         </TargetCommonOption>
         <CommonProperty>
@@ -1209,11 +1209,6 @@
               <FilePath>.\QPC\platform\src\qf_time.c</FilePath>
             </File>
             <File>
-              <FileName>qstamp.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\QPC\platform\src\qstamp.c</FilePath>
-            </File>
-            <File>
               <FileName>qxk.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\QPC\platform\src\qxk.c</FilePath>
@@ -1262,6 +1257,11 @@
               <FileName>qs_rx.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\QPC\spy\src\qs_rx.c</FilePath>
+            </File>
+            <File>
+              <FileName>qstamp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\QPC\spy\src\qstamp.c</FilePath>
             </File>
           </Files>
         </Group>
