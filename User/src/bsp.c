@@ -1,7 +1,6 @@
 #include "bsp.h"
 #include "qpc.h"
 #include "stm32f10x.h"
-#include "standard.h"
 
 #ifdef Q_SPY
     Q_DEFINE_THIS_FILE
@@ -9,6 +8,11 @@
 
 #define SYSCLK_FREQ_24MHz   (24000000)
 #define TICKS_PER_SEC       (100U)
+
+#define BIT(offset)         (1 << (offset))
+#define UNUSED(x)           (void)(x)
+#define DISCARD_RETURN(x)   UNUSED(x)
+#define VOID_PTR_CAST(x)    (void*)(x)
 
 void SysTick_Handler(void);
 void USART3_IRQHandler(void);
@@ -29,9 +33,7 @@ static void RCCconfig(void) {
     RCC->APB2ENR = RCC_APB2ENR_IOPCEN + RCC_APB2ENR_IOPBEN;
 
 #ifdef Q_SPY
-    RCC->APB1ENR = RCC_APB1ENR_USART3EN + RCC_APB1ENR_PWREN;
-#else
-    RCC->APB1ENR = RCC_APB1ENR_PWREN;
+    RCC->APB1ENR = RCC_APB1ENR_USART3EN;
 #endif
 }
 
@@ -58,12 +60,11 @@ static void SYSTICKconfig (uint32_t ticks) {
     NVIC_SetPriority (SysTick_IRQn, 3); /* set Priority for Systick Interrupt */
     SysTick->VAL   = 0UL;               /* Load the SysTick Counter Value */
     /* Enable SysTick IRQ and SysTick Timer */
-    SysTick->CTRL  = SysTick_CTRL_ENABLE + 
-                     SysTick_CTRL_TICKINT + 
+    SysTick->CTRL  = SysTick_CTRL_ENABLE +
+                     SysTick_CTRL_TICKINT +
                      SysTick_CTRL_CLKSOURCE;
     /* assing all priority bits for preemption-prio. and none to sub-prio. */
     NVIC_SetPriorityGrouping(0U);
-    
 }
 
 void QXK_onIdle(void) {
@@ -88,7 +89,7 @@ void QXK_onIdle(void) {
     static QSTimeCtr QS_tickPeriod_;
 
     uint8_t QS_onStartup(void const *arg) {
-        UNUSED_PARAM(arg); /* avoid the "unused parameter" compiler warning */
+        UNUSED(arg); /* avoid the "unused parameter" compiler warning */
         static uint8_t qsTxBuf[2*1024]; /* buffer for QS-TX channel */
         static uint8_t qsRxBuf[100];  /* buffer for QS-RX channel */
         QS_initBuf(qsTxBuf, sizeof(qsTxBuf));
@@ -121,8 +122,8 @@ void QXK_onIdle(void) {
     QF_INT_DISABLE();
     while ((b = QS_getByte()) != QS_EOD) { // while not End-Of-Data...
         QF_INT_ENABLE();
-        while ((USART3->SR & BIT(7)) == 0); // while TXE not empty 
-        USART3->DR = (b & 0xFFU); // put into the DR register 
+        while ((USART3->SR & BIT(7)) == 0); // while TXE not empty
+        USART3->DR = (b & 0xFFU); // put into the DR register
         QF_INT_DISABLE();
     }
     QF_INT_ENABLE();

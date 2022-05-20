@@ -20,6 +20,12 @@ typedef enum {
 
 #endif
 
+typedef enum {
+    FORBIDDEN_PRIORITY = 0,
+    BLINK_PRIORITY,
+    ACTOR_PRIORITY_MAX
+} actor_priority_t;
+
 int main(void) {
     static QEvt const *blink_queueSto[10];
     extern QActive * const AO_Blink;
@@ -28,7 +34,7 @@ int main(void) {
 
     QACTIVE_START(
         AO_Blink,
-        1U,                     /* priority */
+        BLINK_PRIORITY,         /* priority */
         blink_queueSto,         /* queue storage */
         Q_DIM(blink_queueSto),  /* queue storage size */
         (void *)0, 0U,          /* no stack */
@@ -56,10 +62,8 @@ void Q_onAssert(char const * const module, int loc) {
     void QS_onReset(void) {
         SystemReset();
     }
-    
-    void QS_onCleanup(void) {
-    
-    }
+
+    void QS_onCleanup(void) {}
 
     void QS_onCommand(
         uint8_t cmdId,
@@ -67,28 +71,28 @@ void Q_onAssert(char const * const module, int loc) {
         uint32_t param2,
         uint32_t param3
     ) {
-        switch(cmdId) {    
+        switch(cmdId) {
             case dummy: break;
             case print_param_1:
-                QS_BEGIN_ID(BLINK, 0U)
+                QS_BEGIN_ID(BLINK, BLINK_PRIORITY)
                     QS_STR("Print parameter #1:");
                     QS_U32(8, param1);
                 QS_END()
                 break;
             case print_param_2:
-                QS_BEGIN_ID(BLINK, 0U)
+                QS_BEGIN_ID(BLINK, BLINK_PRIORITY)
                     QS_STR("Print parameter #2:");
                     QS_U32(8, param2);
                 QS_END()
                 break;
             case print_param_3:
-                QS_BEGIN_ID(BLINK, 0U)
+                QS_BEGIN_ID(BLINK, BLINK_PRIORITY)
                     QS_STR("Print parameter #3:");
                     QS_U32(8, param3);
                 QS_END()
                 break;
             case print_all_param:
-                QS_BEGIN_ID(BLINK, 0U)
+                QS_BEGIN_ID(BLINK, BLINK_PRIORITY)
                     QS_STR("Print all parameters:\n");
                     QS_U32(8, param1);
                     QS_U32(8, param2);
@@ -96,11 +100,10 @@ void Q_onAssert(char const * const module, int loc) {
                 QS_END()
                 break;
             case throw_error:
-                QS_BEGIN_ID(BLINK, 0U)
+                QS_BEGIN_ID(BLINK, BLINK_PRIORITY)
                     QS_STR("Throw ERROR!\n");
                 QS_END()
             default: Q_ERROR();
         }
     }
-    
 #endif
