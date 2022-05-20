@@ -11,9 +11,19 @@
 /* arm the private time event to expire in 1/2s
 * and periodically every 1/2 second
 */
-QTimeEvt_armX(&amp;me-&gt;timeEvt,
+QTimeEvt_armX(
+    &amp;me-&gt;timeEvt,
     BSP_TICKS_PER_SEC/2,
-    BSP_TICKS_PER_SEC/2);</action>
+    BSP_TICKS_PER_SEC/2
+);
+
+QS_OBJ_DICTIONARY(&amp;l_blink);
+QS_FUN_DICTIONARY(&amp;QHsm_top);
+QS_FUN_DICTIONARY(&amp;Blink_initial);
+QS_FUN_DICTIONARY(&amp;Blink_state_Led_Off);
+QS_FUN_DICTIONARY(&amp;Blink_state_Led_On);
+
+QS_SIG_DICTIONARY(TIMEOUT_SIG, me);</action>
      <initial_glyph conn="6,2,5,1,38,6,-4">
       <action box="0,0,22,12"/>
      </initial_glyph>
