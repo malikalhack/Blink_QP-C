@@ -3,6 +3,23 @@
 
 Q_DEFINE_THIS_FILE
 
+#ifdef Q_SPY
+
+typedef enum {
+    dummy = 0,
+    print_param_1,
+    print_param_2,
+    print_param_3,
+    print_all_param,
+    throw_error
+} qspy_commands_t;
+
+typedef enum {
+    BLINK = QS_USER
+} qspy_trace_records_t;
+
+#endif
+
 int main(void) {
     static QEvt const *blink_queueSto[10];
     extern QActive * const AO_Blink;
@@ -21,6 +38,8 @@ int main(void) {
 }
 
 void QF_onStartup(void) {
+    QS_USR_DICTIONARY(BLINK);
+    QS_GLB_FILTER(QS_UA_RECORDS);
 }
 
 void QF_onCleanup(void) {
@@ -48,21 +67,40 @@ void Q_onAssert(char const * const module, int loc) {
         uint32_t param2,
         uint32_t param3
     ) {
-/*
-        (void)param1;
-        (void)param2;
-        (void)param3;
-
-        switch(cmdId) {
-            default: break;
+        switch(cmdId) {    
+            case dummy: break;
+            case print_param_1:
+                QS_BEGIN_ID(BLINK, 0U)
+                    QS_STR("Print parameter #1:");
+                    QS_U32(8, param1);
+                QS_END()
+                break;
+            case print_param_2:
+                QS_BEGIN_ID(BLINK, 0U)
+                    QS_STR("Print parameter #2:");
+                    QS_U32(8, param2);
+                QS_END()
+                break;
+            case print_param_3:
+                QS_BEGIN_ID(BLINK, 0U)
+                    QS_STR("Print parameter #3:");
+                    QS_U32(8, param3);
+                QS_END()
+                break;
+            case print_all_param:
+                QS_BEGIN_ID(BLINK, 0U)
+                    QS_STR("Print all parameters:\n");
+                    QS_U32(8, param1);
+                    QS_U32(8, param2);
+                    QS_U32(8, param3);
+                QS_END()
+                break;
+            case throw_error:
+                QS_BEGIN_ID(BLINK, 0U)
+                    QS_STR("Throw ERROR!\n");
+                QS_END()
+            default: Q_ERROR();
         }
-*/
-    QS_BEGIN_ID(0U, 0U) /* app-specific record */
-        QS_U8(2, cmdId);
-        QS_U32(8, param1);
-        QS_U32(8, param2);
-        QS_U32(8, param3);
-    QS_END()
     }
     
 #endif

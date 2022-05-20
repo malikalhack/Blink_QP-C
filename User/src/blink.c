@@ -39,9 +39,19 @@ QState Blink_initial(Blink * const me, void const * const par) {
     /* arm the private time event to expire in 1/2s
     * and periodically every 1/2 second
     */
-    QTimeEvt_armX(&me->timeEvt,
+    QTimeEvt_armX(
+        &me->timeEvt,
         BSP_TICKS_PER_SEC/2,
-        BSP_TICKS_PER_SEC/2);
+        BSP_TICKS_PER_SEC/2
+    );
+
+    QS_OBJ_DICTIONARY(&l_blink);
+    QS_FUN_DICTIONARY(&QHsm_top);
+    QS_FUN_DICTIONARY(&Blink_initial);
+    QS_FUN_DICTIONARY(&Blink_state_Led_Off);
+    QS_FUN_DICTIONARY(&Blink_state_Led_On);
+
+    QS_SIG_DICTIONARY(TIMEOUT_SIG, me);
     return Q_TRAN(&Blink_state_Led_Off);
 }
 /*.${AOs::Blink::SM::state_Led_Off} ........................................*/

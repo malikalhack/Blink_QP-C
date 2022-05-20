@@ -3,7 +3,9 @@
 #include "stm32f10x.h"
 #include "standard.h"
 
-Q_DEFINE_THIS_FILE
+#ifdef Q_SPY
+    Q_DEFINE_THIS_FILE
+#endif
 
 #define SYSCLK_FREQ_24MHz   (24000000)
 #define TICKS_PER_SEC       (100U)
@@ -39,11 +41,10 @@ static void RCCconfig(void) {
  */
 static void GPIOconfig(void) {
 #ifdef Q_SPY
-    //GPIOB->BSRR = GPIO_BSRR_BS11;   //PIN11(RX): Input, pull-up
-    //GPIOB->CRH = 0x44448944;        //PIN10(TX): Alternate, 10MHz, push-pull
-    GPIOB->CRH = 0x44444B44;
+    GPIOB->CRH = 0x44444B44;        //PIN10(TX): Alternate, 10MHz, push-pull
+                                    //PIN11(RX): Input
 #endif
-    GPIOC->BSRR = GPIO_BSRR_BS13; //PIN13 = 1 (LED off)
+    GPIOC->BSRR = GPIO_BSRR_BS13;   //PIN13 = 1 (LED off)
     GPIOC->CRH |= GPIO_CRH_MODE13_1;//PIN13: output, 2MHz, open-drain, general
 }
 
@@ -76,7 +77,7 @@ void QXK_onIdle(void) {
         QF_INT_ENABLE();
 
         if (b != QS_EOD) {  // not End-Of-Data?
-            USART2->DR  = (b & 0xFFU);  // put into the DR register
+            USART3->DR  = (b & 0xFFU);  // put into the DR register
         }
     }
 #endif
@@ -88,11 +89,10 @@ void QXK_onIdle(void) {
 
     uint8_t QS_onStartup(void const *arg) {
         UNUSED_PARAM(arg); /* avoid the "unused parameter" compiler warning */
-        static uint8_t qsBuf[2*1024]; /* buffer for QS-TX channel */
+        static uint8_t qsTxBuf[2*1024]; /* buffer for QS-TX channel */
         static uint8_t qsRxBuf[100];  /* buffer for QS-RX channel */
-        QS_initBuf(qsBuf, sizeof(qsBuf));
+        QS_initBuf(qsTxBuf, sizeof(qsTxBuf));
         QS_rxInitBuf(qsRxBuf, sizeof(qsRxBuf));
-
         return 0;
     }
 
@@ -116,29 +116,27 @@ void QXK_onIdle(void) {
     }
 
     void QS_onFlush(void) {
-    /*uint16_t b;
+    uint16_t b;
 
     QF_INT_DISABLE();
     while ((b = QS_getByte()) != QS_EOD) { // while not End-Of-Data...
         QF_INT_ENABLE();
-        while ((USART2->SR & USART_FLAG_TXE) == 0) { // while TXE not empty 
-        }
-        USART2->DR = (b & 0xFFU); // put into the DR register 
+        while ((USART3->SR & BIT(7)) == 0); // while TXE not empty 
+        USART3->DR = (b & 0xFFU); // put into the DR register 
         QF_INT_DISABLE();
     }
-    QF_INT_ENABLE();*/
+    QF_INT_ENABLE();
     }
 
     QSTimeCtr QS_onGetTime(void) {
-    /*
-    if ((SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk) == 0) { 
-        return QS_tickTime_ - (QSTimeCtr)SysTick->VAL;
-    }
-    else { // the rollover occured, but the SysTick_ISR did not run yet
-        return QS_tickTime_ + QS_tickPeriod_ - (QSTimeCtr)SysTick->VAL;
-    }
-    */
-        return 0;
+        QSTimeCtr result;
+        if ((SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk) == 0) {
+            result = QS_tickTime_ - (QSTimeCtr)SysTick->VAL;
+        }
+        else { // the rollover occured, but the SysTick_ISR did not run yet
+            result = QS_tickTime_ + QS_tickPeriod_ - (QSTimeCtr)SysTick->VAL;
+        }
+        return result;
     }
 #endif
 
