@@ -43,12 +43,14 @@ typedef struct {
 
 /* private: */
     QTimeEvt timeEvt;
+    uint8_t counter;
 } Blink;
 
 /* protected: */
 QState Blink_initial(Blink * const me, void const * const par);
 QState Blink_state_Led_Off(Blink * const me, QEvt const * const e);
 QState Blink_state_Led_On(Blink * const me, QEvt const * const e);
+QState Blink_ExtraState(Blink * const me, QEvt const * const e);
 /*.$enddecl${AOs::Blink} ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 /*.$declare${AOs::Blink_ctor} vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
 /*.${AOs::Blink_ctor} ......................................................*/

@@ -39,6 +39,7 @@ QState Blink_initial(Blink * const me, void const * const par) {
     /* arm the private time event to expire in 1/2s
     * and periodically every 1/2 second
     */
+    me->counter = 0;
     QTimeEvt_armX(
         &me->timeEvt,
         BSP_TICKS_PER_SEC/2,
@@ -89,6 +90,31 @@ QState Blink_state_Led_On(Blink * const me, QEvt const * const e) {
             break;
         }
         /*.${AOs::Blink::SM::state_Led_On::TIMEOUT} */
+        case TIMEOUT_SIG: {
+            me->counter++;
+            /*.${AOs::Blink::SM::state_Led_On::TIMEOUT::[each_tenth_time]} */
+            if (!(me->counter%10)) {
+                me->counter = 0;
+                status_ = Q_TRAN(&Blink_ExtraState);
+            }
+            /*.${AOs::Blink::SM::state_Led_On::TIMEOUT::[else]} */
+            else {
+                status_ = Q_TRAN(&Blink_state_Led_Off);
+            }
+            break;
+        }
+        default: {
+            status_ = Q_SUPER(&QHsm_top);
+            break;
+        }
+    }
+    return status_;
+}
+/*.${AOs::Blink::SM::ExtraState} ...........................................*/
+QState Blink_ExtraState(Blink * const me, QEvt const * const e) {
+    QState status_;
+    switch (e->sig) {
+        /*.${AOs::Blink::SM::ExtraState::TIMEOUT} */
         case TIMEOUT_SIG: {
             status_ = Q_TRAN(&Blink_state_Led_Off);
             break;

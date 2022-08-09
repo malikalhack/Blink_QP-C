@@ -5,12 +5,14 @@
  <package name="AOs" stereotype="0x02">
   <class name="Blink" superclass="qpc::QActive">
    <attribute name="timeEvt" type="QTimeEvt" visibility="0x02" properties="0x00"/>
+   <attribute name="counter" type="uint8_t" visibility="0x02" properties="0x00"/>
    <statechart properties="0x01">
     <initial target="../1">
      <action brief="Start_point">(void)par; /* unused parameter */
 /* arm the private time event to expire in 1/2s
 * and periodically every 1/2 second
 */
+me-&gt;counter = 0;
 QTimeEvt_armX(
     &amp;me-&gt;timeEvt,
     BSP_TICKS_PER_SEC/2,
@@ -24,7 +26,7 @@ QS_FUN_DICTIONARY(&amp;Blink_state_Led_Off);
 QS_FUN_DICTIONARY(&amp;Blink_state_Led_On);
 
 QS_SIG_DICTIONARY(TIMEOUT_SIG, me);</action>
-     <initial_glyph conn="6,2,5,1,38,6,-4">
+     <initial_glyph conn="6,2,5,0,20,4">
       <action box="0,0,22,12"/>
      </initial_glyph>
     </initial>
@@ -33,20 +35,33 @@ QS_SIG_DICTIONARY(TIMEOUT_SIG, me);</action>
 board_led_off();</entry>
      <tran trig="TIMEOUT" target="../../2">
       <action brief="Change state to state_Led_On"/>
-      <tran_glyph conn="6,18,3,1,38,11,-4">
+      <tran_glyph conn="6,18,3,1,38,12,-4">
        <action box="0,-2,10,2"/>
       </tran_glyph>
      </tran>
-     <state_glyph node="6,6,34,15">
+     <state_glyph node="6,6,34,14">
       <entry box="1,2,13,4"/>
      </state_glyph>
     </state>
     <state name="state_Led_On">
      <entry brief="Led_On">// Led_On
 board_led_on();</entry>
-     <tran trig="TIMEOUT" target="../../1">
-      <action brief="Change state to state_Led_On"/>
-      <tran_glyph conn="6,38,3,1,42,-28,-8">
+     <tran trig="TIMEOUT">
+      <action brief="Change state to state_Led_On">me-&gt;counter++;</action>
+      <choice target="../../../3">
+       <guard brief="each_tenth_time">!(me-&gt;counter%10)</guard>
+       <action>me-&gt;counter = 0;</action>
+       <choice_glyph conn="48,38,5,2,24,-18">
+        <action box="4,-2,14,2"/>
+       </choice_glyph>
+      </choice>
+      <choice target="../../../1">
+       <guard brief="else"/>
+       <choice_glyph conn="48,38,4,1,-22,-8">
+        <action box="-5,-24,6,2"/>
+       </choice_glyph>
+      </choice>
+      <tran_glyph conn="6,38,3,-1,42">
        <action box="0,-2,10,2"/>
       </tran_glyph>
      </tran>
@@ -54,7 +69,19 @@ board_led_on();</entry>
       <entry box="1,2,13,4"/>
      </state_glyph>
     </state>
-    <state_diagram size="52,47"/>
+    <state name="ExtraState">
+     <entry brief="Skip_one_signal"/>
+     <tran trig="TIMEOUT" target="../../1">
+      <action brief="Change state to state_Led_On"/>
+      <tran_glyph conn="54,12,3,1,-14">
+       <action box="0,-2,10,2"/>
+      </tran_glyph>
+     </tran>
+     <state_glyph node="54,6,34,14">
+      <entry box="1,2,16,2"/>
+     </state_glyph>
+    </state>
+    <state_diagram size="94,46"/>
    </statechart>
   </class>
   <operation name="Blink_ctor" type="void" visibility="0x00" properties="0x00">
