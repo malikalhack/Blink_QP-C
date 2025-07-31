@@ -61,6 +61,7 @@ dkms.conf
 /Listings
 /Objects
 *.uvguix.*
+*.uvoptx
 *.scvd
 
 # Model ini

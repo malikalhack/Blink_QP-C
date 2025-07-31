@@ -62,10 +62,8 @@ void Q_onAssert(char const * const module, int loc) {
     void QS_onReset(void) {
         SystemReset();
     }
-    
-    void QS_onCleanup(void) {
-    
-    }
+
+    void QS_onCleanup(void) {}
 
     void QS_onCommand(
         uint8_t cmdId,
@@ -73,7 +71,7 @@ void Q_onAssert(char const * const module, int loc) {
         uint32_t param2,
         uint32_t param3
     ) {
-        switch(cmdId) {    
+        switch(cmdId) {
             case dummy: break;
             case print_param_1:
                 QS_BEGIN_ID(BLINK, BLINK_PRIORITY)
@@ -108,5 +106,4 @@ void Q_onAssert(char const * const module, int loc) {
             default: Q_ERROR();
         }
     }
-    
 #endif
