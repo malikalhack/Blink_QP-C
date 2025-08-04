@@ -339,7 +339,7 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define></Define>
+              <Define>QXK_PRJ, NDEBUG</Define>
               <Undefine></Undefine>
               <IncludePath>.\User\inc;.\Drivers;.\CMSIS;.\QPC\platform\inc;.\QPC\port\inc</IncludePath>
             </VariousControls>
@@ -1015,7 +1015,7 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>Q_SPY</Define>
+              <Define>Q_SPY,QXK_PRJ,DEBUG</Define>
               <Undefine></Undefine>
               <IncludePath>.\User\inc;.\Drivers;.\CMSIS;.\QPC\platform\inc;.\QPC\port\inc;.\QPC\spy\inc</IncludePath>
             </VariousControls>

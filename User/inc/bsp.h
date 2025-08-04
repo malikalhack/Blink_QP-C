@@ -1,20 +1,38 @@
-// The Board Support Package (BSP).
+/**
+ * @brief The Board Support Package (BSP)
+ * @autor Anton Chernov
+ * @date  23/03/2025
+ */
 
 #ifndef BSP_H_
 #define BSP_H_
 
 /**
- * @details The function of turning on the LED on the board. It allows you
- * to light the only controllable LED on the board, located on port C, pin 13.
+ * @brief Creates actor objects and starts threads.
  */
-void board_led_on(void);
+void bsp_start(void);
 
 /**
- * @details The function of turning off the LED on the board. It allows you
- * to turn off the only controllable LED on the board, located on port C, pin 13.
+ * @brief Resets the MCU/board.
  */
-void board_led_off(void);
+void bsp_system_reset(void);
 
+/**
+ * @brief Turns off the LED on the board. It allows you to turn off the only LED
+ * on the board, connected to Port C, pin 13.
+ */
+inline void bsp_led_off(void);
 
-__declspec(noreturn) void SystemReset(void);
+/**
+ * @brief Turns on the LED on the board. It allows you to turn on the only LED
+ * on the board, connected to Port C, pin 13.
+ */
+inline void bsp_led_on(void);
+
+/**
+ * @brief Toggles the LED on the board. Allows you to toggle the only LED on
+ * the board, which is connected to Port C, pin 13.
+ */
+inline void bsp_led_toggle(void);
+
 #endif /* !BSP_H_ */

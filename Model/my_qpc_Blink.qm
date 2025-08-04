@@ -30,7 +30,7 @@ QS_SIG_DICTIONARY(TIMEOUT_SIG, me);</action>
     </initial>
     <state name="state_Led_Off">
      <entry brief="Led_Off">// Led_Off
-board_led_off();</entry>
+bsp_led_off();</entry>
      <tran trig="TIMEOUT" target="../../2">
       <action brief="Change state to state_Led_On"/>
       <tran_glyph conn="6,18,3,1,38,11,-4">
@@ -43,7 +43,7 @@ board_led_off();</entry>
     </state>
     <state name="state_Led_On">
      <entry brief="Led_On">// Led_On
-board_led_on();</entry>
+bsp_led_on();</entry>
      <tran trig="TIMEOUT" target="../../1">
       <action brief="Change state to state_Led_On"/>
       <tran_glyph conn="6,38,3,1,42,-28,-8">
@@ -83,8 +83,8 @@ enum BlinkSignals {
 
 /* active object(s) used in this application -------------------------------*/
 /* opaque pointer to the Blinky AO */
-extern void board_led_off(void); // Led_Off
-extern void board_led_on(void);  // Led_On
+extern void bsp_led_off(void); // Led_Off
+extern void bsp_led_on(void);  // Led_On
 
 /*============== ask QM to declare the Blink class ================*/
 $declare${AOs::Blink}
