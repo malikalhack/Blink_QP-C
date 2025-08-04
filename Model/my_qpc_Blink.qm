@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model version="5.1.1" links="0">
+ <documentation>Blink</documentation>
+ <framework name="qpc"/>
+ <package name="AOs" stereotype="0x02">
+  <class name="Blink" superclass="qpc::QActive">
+   <attribute name="timeEvt" type="QTimeEvt" visibility="0x02" properties="0x00"/>
+   <statechart properties="0x01">
+    <initial target="../1">
+     <action brief="Start_point">(void)par; /* unused parameter */
+/* arm the private time event to expire in 1/2s
+* and periodically every 1/2 second
+*/
+QTimeEvt_armX(
+    &amp;me-&gt;timeEvt,
+    BSP_TICKS_PER_SEC/2,
+    BSP_TICKS_PER_SEC/2
+);
+
+QS_OBJ_DICTIONARY(&amp;l_blink);
+QS_FUN_DICTIONARY(&amp;QHsm_top);
+QS_FUN_DICTIONARY(&amp;Blink_initial);
+QS_FUN_DICTIONARY(&amp;Blink_state_Led_Off);
+QS_FUN_DICTIONARY(&amp;Blink_state_Led_On);
+
+QS_SIG_DICTIONARY(TIMEOUT_SIG, me);</action>
+     <initial_glyph conn="6,2,5,1,38,6,-4">
+      <action box="0,0,22,12"/>
+     </initial_glyph>
+    </initial>
+    <state name="state_Led_Off">
+     <entry brief="Led_Off">// Led_Off
+bsp_led_off();</entry>
+     <tran trig="TIMEOUT" target="../../2">
+      <action brief="Change state to state_Led_On"/>
+      <tran_glyph conn="6,18,3,1,38,11,-4">
+       <action box="0,-2,10,2"/>
+      </tran_glyph>
+     </tran>
+     <state_glyph node="6,6,34,15">
+      <entry box="1,2,13,4"/>
+     </state_glyph>
+    </state>
+    <state name="state_Led_On">
+     <entry brief="Led_On">// Led_On
+bsp_led_on();</entry>
+     <tran trig="TIMEOUT" target="../../1">
+      <action brief="Change state to state_Led_On"/>
+      <tran_glyph conn="6,38,3,1,42,-28,-8">
+       <action box="0,-2,10,2"/>
+      </tran_glyph>
+     </tran>
+     <state_glyph node="6,25,34,15">
+      <entry box="1,2,13,4"/>
+     </state_glyph>
+    </state>
+    <state_diagram size="52,47"/>
+   </statechart>
+  </class>
+  <operation name="Blink_ctor" type="void" visibility="0x00" properties="0x00">
+   <documentation>«Конструктор» Blinky предоставляется вне класса Blinky, поэтому его можно использовать независимо от класса. Это часть идиомы дизайна «непрозрачного указателя».</documentation>
+   <code>Blink *me = (Blink *)AO_Blink;
+QActive_ctor(&amp;me-&gt;super, Q_STATE_CAST(&amp;Blink_initial));
+QTimeEvt_ctorX(&amp;me-&gt;timeEvt, &amp;me-&gt;super, TIMEOUT_SIG, 0U);</code>
+  </operation>
+ </package>
+ <directory name="..">
+  <directory name="User">
+   <directory name="inc">
+    <file name="blink.h">
+     <text>#ifndef BLINK_H
+#define BLINK_H
+
+#include &quot;qpc.h&quot;
+#define BSP_TICKS_PER_SEC (100) /* number of clock ticks in a second */
+
+/* define the event signals used in the application ------------------------*/
+enum BlinkSignals {
+    TIMEOUT_SIG = Q_USER_SIG, /* offset the first signal by Q_USER_SIG */
+    MAX_SIG /* keep last (the number of signals) */
+};
+
+
+/* active object(s) used in this application -------------------------------*/
+/* opaque pointer to the Blinky AO */
+extern void bsp_led_off(void); // Led_Off
+extern void bsp_led_on(void);  // Led_On
+
+/*============== ask QM to declare the Blink class ================*/
+$declare${AOs::Blink}
+$declare${AOs::Blink_ctor}
+
+
+#endif /* BLINK_H */
+</text>
+    </file>
+   </directory>
+   <directory name="src">
+    <file name="blink.c">
+     <text>#include &quot;blink.h&quot;
+
+/* instantiate the Blinky active object ------------------------------------*/
+static Blink l_blink;
+QActive * const AO_Blink = &amp;l_blink.super;
+
+
+/*================ ask QM to define the Blinky class ================*/
+$define${AOs::Blink}
+$define${AOs::Blink_ctor}
+</text>
+    </file>
+   </directory>
+  </directory>
+ </directory>
+</model>
