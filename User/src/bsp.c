@@ -249,11 +249,22 @@ void __NO_RETURN HardFault_Handler (void) {
     while(1);
 }
 /******************************************************************************/
-#ifdef QXK_PRJ
+#if defined(QV_PRJ)
+/**
+ * @brief Actions performed by the QV kernel when it is idle.
+ */
+void QV_onIdle(void) {
+#elif defined(QK_PRJ)
+/**
+ * @brief Actions performed by the QK kernel when it is idle.
+ */
+void QK_onIdle(void) {
+#elif defined(QXK_PRJ)
 /**
  * @brief Actions performed by the QXK kernel when it is idle.
  */
 void QXK_onIdle(void) {
+#endif
 #ifdef Q_SPY
     QS_rxParse(); /* parse all the received bytes */
     if ((USART3->SR & BIT(7)) != 0) { // TXE empty?
@@ -269,7 +280,6 @@ void QXK_onIdle(void) {
     }
 #endif
 }
-#endif
 /******************************************************************************/
 
 Q_NORETURN Q_onError(char const * const module, int_t const id) {
